@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import NoTodos from './NoTodos';
+import TodoForm from './TodoForm';
 import '../reset.css';
 import '../App.css';
 
@@ -112,16 +114,9 @@ function App() {
     <div className="todo-app-container">
       <div className="todo-app">
         <h2>Todo App</h2>
-        <form action="#" onSubmit={addTodo}>
-          <input
-            type="text"
-            value={todoInput}
-            onChange={handleInput}
-            className="todo-input"
-            placeholder="What do you need to do?"
-          />
-        </form>
-
+        <TodoForm />
+        { todos.length > 0 ? (
+        <>
         <ul className="todo-list">
           {todos.map((todo, index) => (
             <li key={todo.id} className="todo-item-container">
@@ -176,7 +171,7 @@ function App() {
             </li>
           ))}
         </ul>
-
+        
         <div className="check-all-container">
           <div>
             <div className="button">Check All</div>
@@ -197,6 +192,9 @@ function App() {
             <button className="button">Clear completed</button>
           </div>
         </div>
+        </> ) : (
+          <NoTodos />
+        )}
       </div>
     </div>
   );
