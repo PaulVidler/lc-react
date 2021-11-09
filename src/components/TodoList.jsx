@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const TodoList = (props) => {
     return (
@@ -80,6 +81,15 @@ const TodoList = (props) => {
         </div>
         </> 
     )
+}
+
+TodoList.propTypes = {
+    todos: PropTypes.array.isRequired,
+    completeTodo: PropTypes.array.isRequired,
+    markAsEditing: PropTypes.array.isRequired,
+    updateTodo: PropTypes.array.isRequired,
+    cancelEdit: PropTypes.array.isRequired,
+    deleteTodo: PropTypes.array.isRequired,
 }
 
 export default TodoList
