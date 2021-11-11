@@ -148,3 +148,11 @@ h2 {
   text-align: center;
   margin-top: 20px;
 }
+
+.name-container {
+  margin-bottom: 40px;
+}
+
+.name-label {
+  margin-top: 20px;
+}

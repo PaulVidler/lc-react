@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import NoTodos from './NoTodos';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
@@ -6,6 +6,8 @@ import '../reset.css';
 import '../App.css';
 
 function App() {
+  const [name, setName] = useState("");
+  const nameInputEl = useRef(null);
   const [todos, setTodos] = useState([
     {
       id: 1,
@@ -27,11 +29,9 @@ function App() {
     },
   ]);
 
-  
   const [idForTodo, setIdForTodo] = useState(4);
 
   function addTodo(todo) {
-    
     setTodos([
       ...todos,
       {
@@ -39,7 +39,7 @@ function App() {
         title: todo,
         isComplete: false,
       },
-  ]);
+    ]);
 
     setIdForTodo(prevIdForTodo => prevIdForTodo + 1);
   }
@@ -101,20 +101,84 @@ function App() {
     setTodos(updatedTodos);
   }
 
+  function remainingCalculation() {
+    // console.log("calculating remainnig todos");
+    // for loop to simulate slowness
+    // for (let index = 0; index < 2000000000; index++) {}
+
+    return todos.filter(todo => !todo.isComplete).length;
+  }
+
+  const remaining = useMemo(remainingCalculation, [todos]);
+
+  function clearCompleted() {
+    setTodos([...todos].filter(todo => !todo.isComplete));
+  }
+
+  function completeAllTodos() {
+    const updatedTodos = todos.map(todo => {
+      todo.isComplete = true;
+
+      return todo;
+    });
+
+    setTodos(updatedTodos);
+  }
+
+  function todosFiltered(filter) {
+    if (filter === 'all') {
+      return todos;
+    } else if (filter === 'active') {
+      return todos.filter(todo => !todo.isComplete);
+    } else if (filter === 'completed') {
+      return todos.filter(todo => todo.isComplete);
+    }
+  }
+
+  // const consoleLogFunc = () => {
+  //   console.log("useEffectFromFunc");
+  // }
+
+  // useEffect(consoleLogFunc, [todos]);
+
+  useEffect(() => {
+    nameInputEl.current.focus()
+  }, [])
+
   return (
     <div className="todo-app-container">
       <div className="todo-app">
+        <div className="name-container">
+          <h2>What is your name?</h2>
+          <form action="#">
+            <input
+            type="text"
+            ref={nameInputEl}
+            className="todo-input" 
+            placeholder="What is your name?" 
+            value={name} 
+            onChange={(e)=> setName(e.target.value)}
+            />
+          </form>
+          {name && <p className="name-label">Hello {name}</p>}
+        </div>
         <h2>Todo App</h2>
-        <TodoForm addTodo={addTodo}/>
-        { todos.length > 0 ? (
-        <TodoList
-        todos={todos}
-        completeTodo={completeTodo}
-        markAsEditing={markAsEditing}
-        updateTodo={updateTodo}
-        cancelEdit={cancelEdit}
-        deleteTodo={deleteTodo}
-        />) : (
+        <TodoForm addTodo={addTodo} />
+
+        {todos.length > 0 ? (
+          <TodoList
+            todos={todos}
+            completeTodo={completeTodo}
+            markAsEditing={markAsEditing}
+            updateTodo={updateTodo}
+            cancelEdit={cancelEdit}
+            deleteTodo={deleteTodo}
+            remaining={remaining}
+            clearCompleted={clearCompleted}
+            completeAllTodos={completeAllTodos}
+            todosFiltered={todosFiltered}
+          />
+        ) : (
           <NoTodos />
         )}
       </div>
